@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using GeoAPI.Geometries;
-using Spatial4n.Core.Context;
 using Spatial4n.Core.Context.Nts;
-using Spatial4n.Core.Distance;
 using Spatial4n.Core.Shapes;
 using Spatial4n.Core.Shapes.Impl;
 using Spatial4n.Core.Shapes.Nts;
@@ -27,12 +25,12 @@ namespace Spatial4n.Tests.shape
 		{
 			get
 			{
-				yield return new object[] { NtsSpatialContext.GEO_KM };
+				yield return new object[] { NtsSpatialContext.GEO };
 			}
 		}
 
 		public NtsPolygonTest()
-			: base(NtsSpatialContext.GEO_KM)
+			: base(NtsSpatialContext.GEO)
 		{
 			POLY_SHAPE = (NtsGeometry) ctx.ReadShape(POLY_STR);
 
@@ -42,7 +40,7 @@ namespace Spatial4n.Tests.shape
 				Assert.True(pGeom.IsValid);
 				//shift 180 to the right
 				pGeom = (IGeometry) pGeom.Clone();
-				pGeom.Apply(new NtsPolygonTestCoordinateFilter((NtsSpatialContext) ctx));
+				pGeom.Apply(new NtsPolygonTestCoordinateFilter(this));
 				pGeom.GeometryChanged();
 				Assert.False(pGeom.IsValid);
 				POLY_SHAPE_DL = (NtsGeometry) ctx.ReadShape(pGeom.AsText());
@@ -86,9 +84,9 @@ namespace Spatial4n.Tests.shape
 		[Fact]
 		public void testRegressions()
 		{
-			assertJtsConsistentRelate(new PointImpl(-10, 4)); //PointImpl not JtsPoint, and CONTAINS
-			assertJtsConsistentRelate(new PointImpl(-15, -10)); //point on boundary
-			assertJtsConsistentRelate(ctx.MakeRect(135, 180, -10, 10)); //180 edge-case
+			assertJtsConsistentRelate(new PointImpl(-10, 4, ctx)); //PointImpl not JtsPoint, and CONTAINS
+			assertJtsConsistentRelate(new PointImpl(-15, -10, ctx)); //point on boundary
+			assertJtsConsistentRelate(ctx.MakeRectangle(135, 180, -10, 10)); //180 edge-case
 		}
 
 		private void assertJtsConsistentRelate(Shape shape)
@@ -98,7 +96,7 @@ namespace Spatial4n.Tests.shape
 			//JTS considers a point on a boundary INTERSECTS, not CONTAINS
 			if (expectedSR == SpatialRelation.INTERSECTS && shape is Point)
 				expectedSR = SpatialRelation.CONTAINS;
-			AssertRelation(null, expectedSR, POLY_SHAPE, shape);
+			assertRelation(null, expectedSR, POLY_SHAPE, shape);
 
 			if (TEST_DL_POLY && ctx.IsGeo())
 			{
@@ -107,21 +105,21 @@ namespace Spatial4n.Tests.shape
 				if (shape is Rectangle)
 				{
 					Rectangle r = (Rectangle) shape;
-					shape2 = ctx.MakeRect(r.GetMinX() + DL_SHIFT, r.GetMaxX() + DL_SHIFT, r.GetMinY(), r.GetMaxY());
+                    shape2 = makeNormRect(r.GetMinX() + DL_SHIFT, r.GetMaxX() + DL_SHIFT, r.GetMinY(), r.GetMaxY());
 					if (!TEST_DL_OTHER && shape2.GetBoundingBox().GetCrossesDateLine())
 						return;
 				}
 				else if (shape is Point)
 				{
 					Point p = (Point) shape;
-					shape2 = ctx.MakePoint(p.GetX() + DL_SHIFT, p.GetY());
+                    shape2 = ctx.MakePoint(normX(p.GetX() + DL_SHIFT), p.GetY());
 				}
 				else
 				{
 					throw new Exception("" + shape);
 				}
 
-				AssertRelation(null, expectedSR, POLY_SHAPE_DL, shape2);
+				assertRelation(null, expectedSR, POLY_SHAPE_DL, shape2);
 			}
 		}
 
@@ -156,9 +154,9 @@ namespace Spatial4n.Tests.shape
 
 			var jtsGeom = (NtsGeometry) ctx.ReadShape(wktStr);
 
-			AssertRelation(null, SpatialRelation.CONTAINS, jtsGeom,
+			assertRelation(null, SpatialRelation.CONTAINS, jtsGeom,
 			               ctx.MakePoint(-179.99, -16.9));
-			AssertRelation(null, SpatialRelation.CONTAINS, jtsGeom,
+			assertRelation(null, SpatialRelation.CONTAINS, jtsGeom,
 			               ctx.MakePoint(+179.99, -16.9));
 		}
 
@@ -176,20 +174,20 @@ namespace Spatial4n.Tests.shape
 				return stream.ReadLine();
 			}
 		}
-	}
 
-	public class NtsPolygonTestCoordinateFilter : ICoordinateFilter
-	{
-		private readonly NtsSpatialContext _ctx;
+        public class NtsPolygonTestCoordinateFilter : ICoordinateFilter
+        {
+            private readonly NtsPolygonTest _enclosingInstance;
 
-		public NtsPolygonTestCoordinateFilter(NtsSpatialContext ctx)
-		{
-			_ctx = ctx;
-		}
+            public NtsPolygonTestCoordinateFilter(NtsPolygonTest enclosingInstance)
+            {
+                _enclosingInstance = enclosingInstance;
+            }
 
-		public void Filter(Coordinate coord)
-		{
-			coord.X = _ctx.NormX(coord.X + NtsPolygonTest.DL_SHIFT);
-		}
+            public void Filter(Coordinate coord)
+            {
+                coord.X = _enclosingInstance.normX(coord.X + NtsPolygonTest.DL_SHIFT);
+            }
+        }
 	}
 }

@@ -37,14 +37,13 @@ namespace Spatial4n.Core.Context.Nts
 	/// </summary>
 	public class NtsSpatialContext : SpatialContext
 	{
-		public new static NtsSpatialContext GEO_KM = new NtsSpatialContext(DistanceUnits.KILOMETERS);
+		public new static readonly NtsSpatialContext GEO = new NtsSpatialContext(true);
 
 		private readonly GeometryFactory geometryFactory;
 
-		public NtsSpatialContext(DistanceUnits units)
-			: base(units, null, null)
+		public NtsSpatialContext(bool geo)
+			: this(null, geo, null, null)
 		{
-			geometryFactory = new GeometryFactory();
 		}
 
 		/**
@@ -52,8 +51,8 @@ namespace Spatial4n.Core.Context.Nts
 		 *
 		 * @param geometryFactory optional
 		 */
-		public NtsSpatialContext(GeometryFactory geometryFactory, DistanceUnits units, DistanceCalculator calculator, Rectangle worldBounds)
-			: base(units, calculator, worldBounds)
+		public NtsSpatialContext(GeometryFactory geometryFactory, bool geo, DistanceCalculator calculator, Rectangle worldBounds)
+			: base(geo, calculator, worldBounds)
 		{
 			this.geometryFactory = geometryFactory ?? new GeometryFactory();
 		}
@@ -131,10 +130,10 @@ namespace Spatial4n.Core.Context.Nts
 
 		public override Shapes.Point MakePoint(double x, double y)
 		{
-			//A Jts Point is fairly heavyweight!  TODO could/should we optimize this?
-			x = NormX(x);
-			y = NormY(y);
-			return new NtsPoint(geometryFactory.CreatePoint(new Coordinate(x, y)));
+			//A Nts Point is fairly heavyweight!  TODO could/should we optimize this?
+			VerifyX(x);
+            VerifyY(y);
+            return new NtsPoint(geometryFactory.CreatePoint(new Coordinate(x, y)), this);
 		}
 
 		public GeometryFactory GetGeometryFactory()
@@ -144,9 +143,9 @@ namespace Spatial4n.Core.Context.Nts
 
 		public override String ToString()
 		{
-			if (this.Equals(GEO_KM))
+			if (this.Equals(GEO))
 			{
-				return GEO_KM.GetType().Name + ".GEO_KM";
+				return GEO.GetType().Name + ".GEO";
 			}
 			else
 			{

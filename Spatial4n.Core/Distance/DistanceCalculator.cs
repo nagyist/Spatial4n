@@ -28,7 +28,7 @@ namespace Spatial4n.Core.Distance
 		/// <param name="from"></param>
 		/// <param name="to"></param>
 		/// <returns></returns>
-		double Distance(Point @from, Point to);
+		double Distance(Point from, Point to);
 
 		/// <summary>
 		/// The distance between <code>from</code> and <code>Point(toX,toY)</code>.
@@ -37,46 +37,29 @@ namespace Spatial4n.Core.Distance
 		/// <param name="toX"></param>
 		/// <param name="toY"></param>
 		/// <returns></returns>
-		double Distance(Point @from, double toX, double toY);
+		double Distance(Point from, double toX, double toY);
 
-		/// <summary>
-		/// Calculates where a destination point is given an origin (<code>from</code>)
-		/// distance, and bearing (given in degrees -- 0-360).
-		/// </summary>
-		/// <param name="from"></param>
-		/// <param name="distance"></param>
-		/// <param name="bearingDEG"></param>
-		/// <param name="ctx"></param>
-		/// <returns></returns>
-		Point PointOnBearing(Point from, double distance, double bearingDEG, SpatialContext ctx);
-
-		/// <summary>
-		/// Converts a distance (in units of the sphere's radius, e.g. km) to degrees
-		/// (0-360). A spherical earth model is assumed for geospatial.  This is not
-		/// implemented for non-geospatial.
-		/// </summary>
-		/// <param name="distance"></param>
-		/// <returns></returns>
-		double DistanceToDegrees(double distance);
-
-		/// <summary>
-		/// Converts distance-degrees (0-360, e.g. as a length around the sphere) to
-		/// distance (in units of the sphere's radius, e.g. km). This is the opposite
-		/// of {@link #distanceToDegrees(double)}.
-		/// </summary>
-		/// <param name="degrees"></param>
-		/// <returns></returns>
-		double DegreesToDistance(double degrees);
+	    /// <summary>
+	    /// Calculates where a destination point is given an origin (<code>from</code>)
+	    /// distance, and bearing (given in degrees -- 0-360).
+	    /// </summary>
+	    /// <param name="from"></param>
+	    /// <param name="distDEG"></param>
+	    /// <param name="bearingDEG"></param>
+	    /// <param name="ctx"></param>
+	    /// <param name="reuse"> </param>
+	    /// <returns></returns>
+	    Point PointOnBearing(Point from, double distDEG, double bearingDEG, SpatialContext ctx, Point reuse);
 
 		/// <summary>
 		/// Calculates the bounding box of a circle, as specified by its center point
 		/// and distance.
 		/// </summary>
 		/// <param name="from"></param>
-		/// <param name="distance"></param>
+		/// <param name="distDEG"></param>
 		/// <param name="ctx"></param>
 		/// <returns></returns>
-		Rectangle CalcBoxByDistFromPt(Point from, double distance, SpatialContext ctx);
+        Rectangle CalcBoxByDistFromPt(Point from, double distDEG, SpatialContext ctx, Rectangle reuse);
 
 		/// <summary>
 		/// The <code>Y</code> coordinate of the horizontal axis (e.g. left-right line)
@@ -86,10 +69,10 @@ namespace Spatial4n.Core.Distance
 		/// to be slightly different.
 		/// </summary>
 		/// <param name="from"></param>
-		/// <param name="distance"></param>
+		/// <param name="distDEG"></param>
 		/// <param name="ctx"></param>
 		/// <returns></returns>
-		double CalcBoxByDistFromPt_yHorizAxisDEG(Point from, double distance, SpatialContext ctx);
+		double CalcBoxByDistFromPt_yHorizAxisDEG(Point from, double distDEG, SpatialContext ctx);
 
 		double Area(Rectangle rect);
 

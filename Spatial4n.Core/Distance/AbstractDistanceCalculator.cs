@@ -32,12 +32,10 @@ namespace Spatial4n.Core.Distance
 			return GetType().Name;
 		}
 
-		public abstract double Distance(Point @from, double toX, double toY);
-		public abstract Point PointOnBearing(Point @from, double dist, double bearingDEG, SpatialContext ctx);
-		public abstract double DistanceToDegrees(double distance);
-		public abstract double DegreesToDistance(double degrees);
-		public abstract Rectangle CalcBoxByDistFromPt(Point @from, double distance, SpatialContext ctx);
-		public abstract double CalcBoxByDistFromPt_yHorizAxisDEG(Point @from, double distance, SpatialContext ctx);
+		public abstract double Distance(Point from, double toX, double toY);
+		public abstract Point PointOnBearing(Point from, double distDEG, double bearingDEG, SpatialContext ctx, Point reuse);
+		public abstract Rectangle CalcBoxByDistFromPt(Point from, double distDEG, SpatialContext ctx, Rectangle reuse);
+		public abstract double CalcBoxByDistFromPt_yHorizAxisDEG(Point from, double distDEG, SpatialContext ctx);
 		public abstract double Area(Rectangle rect);
 		public abstract double Area(Circle circle);
 	}
