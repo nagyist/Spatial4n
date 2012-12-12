@@ -144,7 +144,7 @@ namespace Spatial4n.Core.Io
 							String k = arg.Substring(0, idx);
 							if (k.Equals("d") || k.Equals("distance"))
 							{
-								if (!Double.TryParse(arg.Substring(idx + 1), out d))
+								if (!Double.TryParse(arg.Substring(idx + 1), NumberStyles.None, CultureInfo.InvariantCulture, out d))
 									throw new InvalidShapeException("Missing Distance: " + str);
 							}
 							else
@@ -154,7 +154,7 @@ namespace Spatial4n.Core.Io
 						}
 						else
 						{
-							if (!Double.TryParse(arg, out d)) throw new InvalidShapeException("Missing Distance: " + str);
+							if (!Double.TryParse(arg, NumberStyles.None, CultureInfo.InvariantCulture, out d)) throw new InvalidShapeException("Missing Distance: " + str);
 						}
 						if (st.Length > tokenPos)
 						{
