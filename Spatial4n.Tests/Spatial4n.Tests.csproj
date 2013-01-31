@@ -79,9 +79,13 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GeoAPI, Version=1.6.4448.22541, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL" />
+    <Reference Include="GeoAPI">
+      <HintPath>..\SharedLibs\GeoAPI.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="NetTopologySuite, Version=1.12.4448.22555, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL" />
+    <Reference Include="NetTopologySuite">
+      <HintPath>..\SharedLibs\NetTopologySuite.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

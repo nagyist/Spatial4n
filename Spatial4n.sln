@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial4n.Core", "Spatial4n.Core\Spatial4n.Core.csproj", "{777904AC-46EF-466C-9E13-2A52A6735987}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial4n.Tests", "Spatial4n.Tests\Spatial4n.Tests.csproj", "{1DE4AC79-7ECF-4C37-8EDA-F78D211151AB}"
